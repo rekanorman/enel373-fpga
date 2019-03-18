@@ -4,7 +4,7 @@
 -- 
 -- Create Date: 13.03.2019 13:15:17
 -- Design Name: 
--- Module Name: high_level_main - Behavioral
+-- Module Name: high_level_main - Structural
 -- Project Name: 
 -- Target Devices: 
 -- Tool Versions: 
@@ -39,7 +39,7 @@ entity high_level_main is
            LED : out STD_LOGIC_VECTOR (3 downto 0));
 end high_level_main;
 
-architecture Behavioral of high_level_main is
+architecture Structural of high_level_main is
 
 signal alu_result : STD_LOGIC_vectoR (3 downto 0);
 signal button : STD_LOGIC;
@@ -81,4 +81,4 @@ begin
     alu : alu_4_bit Port map (opA=>SW(15 downto 12), opB=>SW(11 downto 8), opcode=>SW(1 downto 0), result=>alu_result);
     register_4_bit : generic_register generic map (data_width=>4) port map (d=>alu_result, q=>LED(3 downto 0), enable=>'1', clr=>'0', clk=>clk);
 
-end Behavioral;
+end Structural;

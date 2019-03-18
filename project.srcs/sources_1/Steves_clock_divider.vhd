@@ -5,7 +5,7 @@
 -- Create Date:    23:24:33 02/07/2011 
 -- Revised Date:   22:01:20 04/03/2019
 -- Design Name: 
--- Module Name:    my_divider - Behavioral 
+-- Module Name:    clk_divider - Behavioral 
 -- Project Name: 	For ENEL373 course on digital logic
 -- Target Devices: Any
 -- Tool versions:  Any
