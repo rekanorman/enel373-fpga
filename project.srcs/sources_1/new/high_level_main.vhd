@@ -4,7 +4,7 @@
 -- 
 -- Create Date: 13.03.2019 13:15:17
 -- Design Name: 
--- Module Name: high_level_main - Behavioral
+-- Module Name: high_level_main - Structural
 -- Project Name: 
 -- Target Devices: 
 -- Tool Versions: 
@@ -39,7 +39,7 @@ entity high_level_main is
            LED : out STD_LOGIC_VECTOR (7 downto 0));
 end high_level_main;
 
-architecture Behavioral of high_level_main is
+architecture Structural of high_level_main is
 
 signal alu_result : STD_LOGIC_vectoR (7 downto 0);
 signal alu_op1 : STD_LOGIC_VECTOR (7 downto 0);
@@ -108,4 +108,4 @@ begin
     my_fsm : fsm Port map (button=>button, clk=>clk100mhz, reset=>'0', en_op1=>en_reg_op1, en_op2=>en_reg_op2, en_opcode=>en_reg_opcode, en_result=>en_reg_result);
     
     LED (7 downto 0) <= leds when (en_reg_result = '1') else "00000000";
-end Behavioral;
+end Structural;
