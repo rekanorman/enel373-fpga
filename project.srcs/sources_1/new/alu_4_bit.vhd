@@ -32,23 +32,24 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity alu_4_bit is
-    Port ( opA : in STD_LOGIC_VECTOR (3 downto 0);
-           opB : in STD_LOGIC_VECTOR (3 downto 0);
-           opcode : in STD_LOGIC_VECTOR (1 downto 0);
-           result : out STD_LOGIC_VECTOR (3 downto 0));
-end alu_4_bit;
+entity alu_8_bit is
+    Port ( opA : in STD_LOGIC_VECTOR (7 downto 0);
+           opB : in STD_LOGIC_VECTOR (7 downto 0);
+           opcode : in STD_LOGIC_VECTOR (3 downto 0);
+           result : out STD_LOGIC_VECTOR (7 downto 0));
+end alu_8_bit;
 
-architecture Behavioral of alu_4_bit is
+architecture Behavioral of alu_8_bit is
 
 begin
     process (opA, opB, opcode)
     begin
         case opcode is
-            when "00" => result <= opA + opB;
-            when "01" => result <= opA - opB;
-            when "10" => result <= opA AND opB;
-            when "11" => result <= opA OR opB;
+            when "1000" => result <= opA + opB;
+            when "0100" => result <= opA - opB;
+            when "0010" => result <= opA AND opB;
+            when "0001" => result <= opA OR opB;
+            when others => result <= "00000000";
         end case;
     end process;
         
