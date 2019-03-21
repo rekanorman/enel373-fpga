@@ -1,9 +1,10 @@
 ----------------------------------------------------------------------------------
--- Code retrieved from the Digital Design using Digilent FPGA boards textbook.
+-- Company: 
+-- Engineer: 
 -- 
--- Create Date: 13.03.2019 14:22:29
+-- Create Date: 21.03.2019 13:44:20
 -- Design Name: 
--- Module Name: debouncer - Behavioral
+-- Module Name: debouncer_tb - Behavioral
 -- Project Name: 
 -- Target Devices: 
 -- Tool Versions: 
@@ -30,33 +31,35 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity debouncer is
-    Port ( input : in STD_LOGIC;
-           clk : in STD_LOGIC;
-           clr : in STD_LOGIC;
-           output : out STD_LOGIC);
-end debouncer;
+entity debouncer_tb is
+--  Port ( );
+end debouncer_tb;
 
-architecture Behavioral of debouncer is
+architecture Behavioral of debouncer_tb is
 
-signal delay1, delay2, delay3: STD_LOGIC;
-
+    component debouncer is
+        Port ( input : in STD_LOGIC;
+               clk : in STD_LOGIC;
+               clr : in STD_LOGIC;
+               output : out STD_LOGIC);
+    end component;
+    
+    signal input : STD_LOGIC;
+    signal clk : STD_LOGIC := '0';
+    signal output : STD_LOGIC;
+    
 begin
+    UUT : debouncer port map(input => input, clk => clk, clr => '0', output => output);
 
-    process(input, clk, clr)
+    clk <= not clk after 2ms;
+
+    process
     begin
-    
-        if clr = '1' then
-            delay1 <= '0';
-            delay2 <= '0';
-            delay3 <= '0';
-        elsif rising_edge(clk) then
-            delay1 <= input;
-            delay2 <= delay1;
-            delay3 <= delay2;
-        end if;
+        input <= '0';
+        wait for 100ms;
+        input <= '1';
+        wait for 100ms;
+        
     end process;
-    
-    output <= delay1 and delay2 and delay3;
 
 end Behavioral;

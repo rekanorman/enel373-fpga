@@ -47,7 +47,7 @@ architecture Behavioral of generic_register is
 
 begin
     
-    process (d, clk, enable)
+    process (d, clk, enable, clr)
     begin
         if (clr = '1') then
             q <= (others => '0');

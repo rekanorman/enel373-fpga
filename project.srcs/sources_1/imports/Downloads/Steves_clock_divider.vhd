@@ -43,10 +43,11 @@ end clk_divider;
 architecture Behavioral of clk_divider is
 --
 --	constant clk_limit : std_logic_vector(27 downto 0) := X"17D783F"; -- 2 Hz output
-    constant clk_limit : std_logic_vector(27 downto 0) := X"002FAF0"; -- 'a few hundred Hz', Reka 2019
+--    constant clk_limit : std_logic_vector(27 downto 0) := X"003D090"; -- 200 Hz
+    constant clk_limit : std_logic_vector(27 downto 0) := X"0000010"; -- use for test bench, reduces frequency by factor of about 30
 
-	signal clk_ctr : std_logic_vector(27 downto 0);
-	signal temp_clk : std_logic;
+	signal clk_ctr : std_logic_vector(27 downto 0) := (others => '0');
+	signal temp_clk : std_logic := '0';
 
 begin
 

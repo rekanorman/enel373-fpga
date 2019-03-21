@@ -43,8 +43,8 @@ end fsm;
 
 architecture Behavioral of fsm is
 
-type state_type is (idle, read_op1, read_op2, read_opcode, display);
-signal current_state, next_state: state_type;
+type state_type is (read_op1, read_op2, read_opcode, display);
+signal current_state, next_state : state_type := read_op1;
 
 begin
 
@@ -100,16 +100,14 @@ begin
                 next_state <= read_op1;
             end if;
         
-        when others =>
-            en_op1 <= '0';
-            en_op2 <= '0';
-            en_opcode <= '0';
-            en_result <= '0';
-            next_state <= read_op1;
+--        when others =>
+--            en_op1 <= '0';
+--            en_op2 <= '0';
+--            en_opcode <= '0';
+--            en_result <= '0';
+--            next_state <= read_op1;
         
         end case;
-        
-        
         
     end process;
 end Behavioral;
