@@ -39,7 +39,7 @@ end debouncer;
 
 architecture Behavioral of debouncer is
 
-signal delay1, delay2, delay3: STD_LOGIC;
+signal delay1, delay2, delay3, delay4, delay5 : STD_LOGIC;
 
 begin
 
@@ -50,13 +50,17 @@ begin
             delay1 <= '0';
             delay2 <= '0';
             delay3 <= '0';
+            delay4 <= '0';
+            delay5 <= '0';
         elsif rising_edge(clk) then
             delay1 <= input;
             delay2 <= delay1;
             delay3 <= delay2;
+            delay4 <= delay3;
+            delay5 <= delay4;
         end if;
     end process;
     
-    output <= delay1 and delay2 and delay3;
+    output <= delay1 and delay2 and delay3 and delay4 and delay5;
 
 end Behavioral;

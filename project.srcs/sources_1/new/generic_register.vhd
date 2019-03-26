@@ -33,20 +33,17 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 --use UNISIM.VComponents.all;
 
 entity generic_register is
-    generic (
-        data_width : integer := 8
-    );
-    Port ( d : in STD_LOGIC_VECTOR (data_width-1 downto 0);
-           q : out STD_LOGIC_VECTOR (data_width-1 downto 0);
+    Generic (data_width : integer := 8);
+    Port ( d : in STD_LOGIC_VECTOR (data_width - 1 downto 0);
+           q : out STD_LOGIC_VECTOR (data_width - 1 downto 0);
            clk : in STD_LOGIC;
            clr : in STD_LOGIC;
            enable : in STD_LOGIC);
 end generic_register;
 
 architecture Behavioral of generic_register is
-
 begin
-    
+
     process (d, clk, enable, clr)
     begin
         if (clr = '1') then
@@ -55,5 +52,5 @@ begin
             q <= d;
         end if;
     end process;
-
+    
 end Behavioral;

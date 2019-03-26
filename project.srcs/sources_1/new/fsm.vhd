@@ -42,72 +42,90 @@ entity fsm is
 end fsm;
 
 architecture Behavioral of fsm is
+    type state_type is (read_op1, read_op2, read_opcode, display);
+    signal current_state, next_state : state_type := read_op1;
 
-type state_type is (read_op1, read_op2, read_opcode, display);
-signal current_state, next_state : state_type := read_op1;
+    -- Signals for button edge detection
+    signal button_1 : STD_LOGIC := '0';
+    signal button_2 : STD_LOGIC := '0';
+    signal button_rising_edge : STD_LOGIC := '0';
+    signal button_falling_edge : STD_LOGIC := '0';
 
 begin
-
-process (clk, reset)
-begin
-    if (reset = '1') then
-        current_state <= read_op1;
-    elsif (rising_edge(clk)) then
-        current_state <= next_state;
-    end if;
-end process;
-
-process (current_state, button)
-begin
-    case current_state is
-        when read_op1 =>
-            en_op1 <= '1';
-            en_op2 <= '0';
-            en_opcode <= '0';
-            en_result <= '0';
-            next_state <= read_op1;
-            if (rising_edge(button)) then
-                next_state <= read_op2;
-            end if;
-        
-        when read_op2 =>
-            en_op1 <= '0';
-            en_op2 <= '1';
-            en_opcode <= '0';
-            en_result <= '0';
-            next_state <= read_op2;
-            if (rising_edge(button)) then
-                next_state <= read_opcode;
-            end if;
-        
-        when read_opcode =>
-            en_op1 <= '0';
-            en_op2 <= '0';
-            en_opcode <= '1';
-            en_result <= '0';
-            next_state <= read_opcode;
-            if (rising_edge(button)) then
-                next_state <= display;
-            end if;
-        
-        when display =>
-            en_op1 <= '0';
-            en_op2 <= '0';
-            en_opcode <= '0';
-            en_result <= '1';
-            next_state <= display;
-            if (rising_edge(button)) then
+    -- Detect edges of button signal
+    button_1 <= button when rising_edge(clk);
+    button_2 <= button_1 when rising_edge(clk);
+    button_rising_edge <= button_1 and not button_2;
+    button_falling_edge <= not button_1 and button_2;
+    
+    process (clk, reset)
+    begin
+        if (reset = '1') then
+            current_state <= read_op1;
+        elsif (rising_edge(clk)) then
+            current_state <= next_state;
+        end if;
+    end process;
+    
+    process (current_state, button_rising_edge)
+    begin
+        case current_state is
+            when read_op1 =>
+                en_op1 <= '1';
+                en_op2 <= '0';
+                en_opcode <= '0';
+                en_result <= '0';
+                
+                if (button_rising_edge = '1') then
+                    next_state <= read_op2;
+                else
+                    next_state <= read_op1;
+                end if;
+            
+            when read_op2 =>
+                en_op1 <= '0';
+                en_op2 <= '1';
+                en_opcode <= '0';
+                en_result <= '0';
+                
+                if (button_rising_edge = '1') then
+                    next_state <= read_opcode;
+                else
+                    next_state <= read_op2;
+                end if;
+            
+            when read_opcode =>
+                en_op1 <= '0';
+                en_op2 <= '0';
+                en_opcode <= '1';
+                en_result <= '0';
+                
+                if (button_rising_edge = '1') then
+                    next_state <= display;
+                else
+                    next_state <= read_opcode;
+                end if;
+            
+            when display =>
+                en_op1 <= '0';
+                en_op2 <= '0';
+                en_opcode <= '0';
+                en_result <= '1';
+    
+                if (button_rising_edge = '1') then
+                    next_state <= read_op1;
+                else
+                    next_state <= display;
+                end if;
+            
+            when others =>
+                en_op1 <= '0';
+                en_op2 <= '0';
+                en_opcode <= '0';
+                en_result <= '0';
                 next_state <= read_op1;
-            end if;
-        
---        when others =>
---            en_op1 <= '0';
---            en_op2 <= '0';
---            en_opcode <= '0';
---            en_result <= '0';
---            next_state <= read_op1;
-        
+            
         end case;
-        
+            
     end process;
 end Behavioral;
