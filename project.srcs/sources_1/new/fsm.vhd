@@ -38,11 +38,12 @@ entity fsm is
            en_op1 : out STD_LOGIC;
            en_op2 : out STD_LOGIC;
            en_opcode : out STD_LOGIC;
-           en_result : out STD_LOGIC);
+           en_result : out STD_LOGIC;
+           en_display : out STD_LOGIC);
 end fsm;
 
 architecture Behavioral of fsm is
-    type state_type is (read_op1, read_op2, read_opcode, display);
+    type state_type is (read_op1, read_op2, read_opcode, calculate, display);
     signal current_state, next_state : state_type := read_op1;
 
     -- Signals for button edge detection
@@ -75,6 +76,7 @@ begin
                 en_op2 <= '0';
                 en_opcode <= '0';
                 en_result <= '0';
+                en_display <= '0';
                 
                 if (button_rising_edge = '1') then
                     next_state <= read_op2;
@@ -87,7 +89,8 @@ begin
                 en_op2 <= '1';
                 en_opcode <= '0';
                 en_result <= '0';
-                
+                en_display <= '0';
+
                 if (button_rising_edge = '1') then
                     next_state <= read_opcode;
                 else
@@ -99,19 +102,34 @@ begin
                 en_op2 <= '0';
                 en_opcode <= '1';
                 en_result <= '0';
-                
+                en_display <= '0';
+
                 if (button_rising_edge = '1') then
-                    next_state <= display;
+                    next_state <= calculate;
                 else
                     next_state <= read_opcode;
                 end if;
-            
-            when display =>
+
+            when calculate =>
                 en_op1 <= '0';
                 en_op2 <= '0';
                 en_opcode <= '0';
                 en_result <= '1';
-    
+                en_display <= '0';
+
+                if (button_rising_edge = '1') then
+                    next_state <= display;
+                else
+                    next_state <= calculate;
+                end if;
+                
+            when display =>
+                en_op1 <= '0';
+                en_op2 <= '0';
+                en_opcode <= '0';
+                en_result <= '0';
+                en_display <= '1';
+
                 if (button_rising_edge = '1') then
                     next_state <= read_op1;
                 else
@@ -123,6 +141,7 @@ begin
                 en_op2 <= '0';
                 en_opcode <= '0';
                 en_result <= '0';
+                en_display <= '0';
                 next_state <= read_op1;
             
         end case;

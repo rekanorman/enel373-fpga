@@ -51,6 +51,7 @@ architecture Structural of high_level_main is
     signal en_reg_op2 : STD_LOGIC;
     signal en_reg_opcode : STD_LOGIC;
     signal en_reg_result : STD_LOGIC;
+    signal leds_on : STD_LOGIC;
     
     signal button : STD_LOGIC;
     signal clk200hz : STD_LOGIC;
@@ -91,7 +92,8 @@ architecture Structural of high_level_main is
                en_op1 : out STD_LOGIC;
                en_op2 : out STD_LOGIC;
                en_opcode : out STD_LOGIC;
-               en_result : out STD_LOGIC);
+               en_result : out STD_LOGIC;
+               en_display : out STD_LOGIC);
     end component;
 
 begin    
@@ -142,8 +144,9 @@ begin
                            en_op1 => en_reg_op1,
                            en_op2 => en_reg_op2,
                            en_opcode => en_reg_opcode,
-                           en_result => en_reg_result);
+                           en_result => en_reg_result,
+                           en_display => leds_on);
     
-    LED (7 downto 0) <= leds when (en_reg_result = '1') else "00000000";
+    LED (7 downto 0) <= leds when (leds_on = '1') else "00000000";
     
 end Structural;
