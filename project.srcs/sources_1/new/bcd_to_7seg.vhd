@@ -35,7 +35,8 @@ begin
 				when "0111"	=> out_7seg <= "0001111";
 				when "1000"	=> out_7seg <= "0000000";
 				when "1001"	=> out_7seg <= "0001100";
-				when "1111" => out_7seg <= "1111110";    -- use "1111" to encode minus sign
+				when "1110" => out_7seg <= "1111110";    -- use "1110" to encode minus sign
+				when "1111" => out_7seg <= "1111111";    -- use "1111" to encode display off
 				when others => out_7seg <= "-------";
 			end case;
 	end process my_seg_proc;
