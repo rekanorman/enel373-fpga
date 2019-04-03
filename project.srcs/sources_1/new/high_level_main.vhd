@@ -15,7 +15,6 @@
 -- Revision:
 -- Revision 0.01 - File Created
 -- Additional Comments:
--- 
 ----------------------------------------------------------------------------------
 
 
@@ -123,20 +122,18 @@ begin
                               op2 => alu_op2,
                               opcode => alu_opcode,
                               result => alu_result);
-                              
+    opA : generic_register generic map (data_width => 8)
+                           port map (d => SW(7 downto 0),
+                                     q => alu_op2,
+                                     enable => en_opA,
+                                     clr => '0',
+                                     clk => clk200hz);                          
     r1 : generic_register generic map (data_width => 8)
                           port map (d => SW(7 downto 0),
                                     q => r1_out,
                                     enable => en_r1,
                                     clr => '0',
                                     clk => clk200hz);    
-                                                              
-    opA : generic_register generic map (data_width => 8)
-                          port map (d => SW(7 downto 0),
-                                    q => alu_op2,
-                                    enable => en_opA,
-                                    clr => '0',
-                                    clk => clk200hz);
                                          
     buf_r1 : tristate_buffer generic map (width => 8)
                              port map (input => r1_out,
