@@ -41,7 +41,7 @@ entity display_demo is
            CE : out STD_LOGIC;
            CF : out STD_LOGIC;
            CG : out STD_LOGIC;
-           AN : out STD_LOGIC_VECTOR (3 downto 0));
+           AN : out STD_LOGIC_VECTOR (7 downto 0));
 end display_demo;
 
 architecture Behavioral of display_demo is
@@ -57,7 +57,7 @@ architecture Behavioral of display_demo is
                CE : out STD_LOGIC;
                CF : out STD_LOGIC;
                CG : out STD_LOGIC;
-               AN : out STD_LOGIC_VECTOR (3 downto 0));
+               AN : out STD_LOGIC_VECTOR (7 downto 0));
     end component;
     
     component clk_divider is

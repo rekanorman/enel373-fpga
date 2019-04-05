@@ -43,7 +43,7 @@ entity display is
            CE : out STD_LOGIC;
            CF : out STD_LOGIC;
            CG : out STD_LOGIC;
-           AN : out STD_LOGIC_VECTOR (3 downto 0));
+           AN : out STD_LOGIC_VECTOR (7 downto 0));
 end display;
 
 architecture Behavioral of display is
@@ -82,8 +82,12 @@ architecture Behavioral of display is
     end component;
 
 begin
+    -- Not using the leftmost 4 displays, so turn them off.
+    AN(7 downto 4) <= "1111";
+    
     -- One bit of AN is enabled at a time to multiplex between displays
-    AN <= state;
+    -- (inverted because AN is active low).
+    AN(3 downto 0) <= not state;
     
     CA <= CAtoCG(0);
     CB <= CAtoCG(1);
