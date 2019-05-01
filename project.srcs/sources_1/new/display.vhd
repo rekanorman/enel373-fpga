@@ -36,13 +36,7 @@ use IEEE.STD_LOGIC_SIGNED.ALL;
 entity display is
     Port ( value : in STD_LOGIC_VECTOR (7 downto 0);
            clk : in STD_LOGIC;
-           CA : out STD_LOGIC;
-           CB : out STD_LOGIC;
-           CC : out STD_LOGIC;
-           CD : out STD_LOGIC;
-           CE : out STD_LOGIC;
-           CF : out STD_LOGIC;
-           CG : out STD_LOGIC;
+           CAtoCG : out STD_LOGIC_VECTOR (0 to 6);
            AN : out STD_LOGIC_VECTOR (7 downto 0));
 end display;
 
@@ -66,9 +60,6 @@ architecture Behavioral of display is
     -- depends on current state
     signal current_bcd_display : STD_LOGIC_VECTOR (3 downto 0) := "0000";
     
-    -- The value for the outputs CA, ..., CG
-    signal CAtoCG : STD_LOGIC_VECTOR (0 to 6) := "0000000";
-    
     component bin_to_bcd_8bit is
         Port ( bin : in  STD_LOGIC_VECTOR (7 downto 0);
                ones : out  STD_LOGIC_VECTOR (3 downto 0);
@@ -88,14 +79,6 @@ begin
     -- One bit of AN is enabled at a time to multiplex between displays
     -- (inverted because AN is active low).
     AN(3 downto 0) <= not state;
-    
-    CA <= CAtoCG(0);
-    CB <= CAtoCG(1);
-    CC <= CAtoCG(2);
-    CD <= CAtoCG(3);
-    CE <= CAtoCG(4);
-    CF <= CAtoCG(5);
-    CG <= CAtoCG(6);
     
     bin_to_bcd : bin_to_bcd_8bit port map (bin => positive_bin_value,
                                            ones => ones,

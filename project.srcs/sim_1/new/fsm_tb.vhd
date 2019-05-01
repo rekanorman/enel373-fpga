@@ -37,13 +37,18 @@ end fsm_tb;
 
 architecture Behavioral of fsm_tb is
     component fsm is
-    Port ( button : in STD_LOGIC;
-           clk : in STD_LOGIC;
-           reset : in STD_LOGIC;
-           en_op1 : out STD_LOGIC;
-           en_op2 : out STD_LOGIC;
-           en_opcode : out STD_LOGIC;
-           en_result : out STD_LOGIC);
+        Port ( clk : in STD_LOGIC;
+               button : in STD_LOGIC;
+               instruction : in STD_LOGIC_VECTOR (7 downto 0);
+               reset : in STD_LOGIC;
+               ext_value_en : out STD_LOGIC;
+               r1_load : out STD_LOGIC;
+               r2_load : out STD_LOGIC;
+               r1_out_en : out STD_LOGIC;
+               r2_out_en : out STD_LOGIC;
+               opA_load : out STD_LOGIC;
+               result_load : out STD_LOGIC;
+               display_sel : out STD_LOGIC_VECTOR (1 downto 0));
     end component;
 
     signal button : STD_LOGIC := '0';

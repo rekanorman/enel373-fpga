@@ -32,25 +32,34 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity fsm is
-    Port ( button : in STD_LOGIC;
-           clk : in STD_LOGIC;
+    Port ( clk : in STD_LOGIC;
+           button : in STD_LOGIC;
+           instruction : in STD_LOGIC_VECTOR (7 downto 0);
            reset : in STD_LOGIC;
-           en_op1 : out STD_LOGIC;
-           en_op2 : out STD_LOGIC;
-           en_opcode : out STD_LOGIC;
-           en_result : out STD_LOGIC;
-           en_display : out STD_LOGIC);
+           ext_value_en : out STD_LOGIC;
+           r1_load : out STD_LOGIC;
+           r2_load : out STD_LOGIC;
+           r1_out_en : out STD_LOGIC;
+           r2_out_en : out STD_LOGIC;
+           opA_load : out STD_LOGIC;
+           result_load : out STD_LOGIC;
+           display_sel : out STD_LOGIC_VECTOR (1 downto 0));
 end fsm;
 
 architecture Behavioral of fsm is
-    type state_type is (read_op1, read_op2, read_opcode, calculate, display);
-    signal current_state, next_state : state_type := read_op1;
+    type state_type is (idle, read_input, load_R, display_R1, display_R2,
+                        load_A, calculate, display_result);
+    signal current_state, next_state : state_type := idle;
 
     -- Signals for button edge detection
     signal button_1 : STD_LOGIC := '0';
     signal button_2 : STD_LOGIC := '0';
     signal button_rising_edge : STD_LOGIC := '0';
     signal button_falling_edge : STD_LOGIC := '0';
+    
+    -- Values read from the instruction
+    signal opcode : STD_LOGIC_VECTOR (3 downto 0);
+    signal reg : STD_LOGIC;
 
 begin
     -- Detect edges of button signal
@@ -59,10 +68,14 @@ begin
     button_rising_edge <= button_1 and not button_2;
     button_falling_edge <= not button_1 and button_2;
     
+    -- Parse instruction
+    opcode <= instruction (7 downto 4);
+    reg <= instruction (3);
+    
     process (clk, reset)
     begin
         if (reset = '1') then
-            current_state <= read_op1;
+            current_state <= idle;
         elsif (rising_edge(clk)) then
             current_state <= next_state;
         end if;
@@ -71,79 +84,138 @@ begin
     process (current_state, button_rising_edge)
     begin
         case current_state is
-            when read_op1 =>
-                en_op1 <= '1';
-                en_op2 <= '0';
-                en_opcode <= '0';
-                en_result <= '0';
-                en_display <= '0';
+            when idle =>
+                ext_value_en <= '0';
+                r1_load <= '0';
+                r2_load <= '0';
+                r1_out_en <= '0';
+                r2_out_en <= '0';
+                opA_load <= '0';
+                result_load <= '0';
+                display_sel <= "00";
                 
                 if (button_rising_edge = '1') then
-                    next_state <= read_op2;
+                    next_state <= read_input;
                 else
-                    next_state <= read_op1;
-                end if;
-            
-            when read_op2 =>
-                en_op1 <= '0';
-                en_op2 <= '1';
-                en_opcode <= '0';
-                en_result <= '0';
-                en_display <= '0';
+                    next_state <= idle;
+                end if;           
 
-                if (button_rising_edge = '1') then
-                    next_state <= read_opcode;
+            when read_input =>
+                ext_value_en <= '0';
+                r1_load <= '0';
+                r2_load <= '0';
+                r1_out_en <= '0';
+                r2_out_en <= '0';
+                opA_load <= '0';
+                result_load <= '0';
+                display_sel <= "00";
+                
+                if (opcode = "0000") then
+                    next_state <= load_R;
                 else
-                    next_state <= read_op2;
+                    next_state <= load_A;
                 end if;
-            
-            when read_opcode =>
-                en_op1 <= '0';
-                en_op2 <= '0';
-                en_opcode <= '1';
-                en_result <= '0';
-                en_display <= '0';
+                
+            when load_R =>
+                ext_value_en <= '1';
+                if reg = '0' then
+                    r1_load <= '1';
+                    r2_load <= '0';
+                else
+                    r1_load <= '0';
+                    r2_load <= '1';
+                end if;
+                
+                r1_out_en <= '0';
+                r2_out_en <= '0';
+                opA_load <= '0';
+                result_load <= '0';
+                display_sel <= "00";
+                
+                if reg = '0' then
+                    next_state <= display_R1;
+                else
+                    next_state <= display_R2;
+                end if;
+                    
+            when display_R1 =>
+                ext_value_en <= '0';
+                r1_load <= '0';
+                r2_load <= '0';
+                r1_out_en <= '0';
+                r2_out_en <= '0';
+                opA_load <= '0';
+                result_load <= '0';
+                display_sel <= "01";
+                
+                if (button_rising_edge = '1') then
+                    next_state <= read_input;
+                else
+                    next_state <= display_R1;
+                end if; 
 
+            when display_R2 =>
+                ext_value_en <= '0';
+                r1_load <= '0';
+                r2_load <= '0';
+                r1_out_en <= '0';
+                r2_out_en <= '0';
+                opA_load <= '0';
+                result_load <= '0';
+                display_sel <= "10";
+                
                 if (button_rising_edge = '1') then
-                    next_state <= calculate;
+                    next_state <= read_input;
                 else
-                    next_state <= read_opcode;
+                    next_state <= display_R2;
                 end if;
+
+            when load_A =>
+                ext_value_en <= '1';
+                r1_load <= '0';
+                r2_load <= '0';
+                r1_out_en <= '0';
+                r2_out_en <= '0';
+                opA_load <= '1';
+                result_load <= '0';
+                display_sel <= "00";
+                
+                next_state <= calculate;
 
             when calculate =>
-                en_op1 <= '0';
-                en_op2 <= '0';
-                en_opcode <= '0';
-                en_result <= '1';
-                en_display <= '0';
-
-                if (button_rising_edge = '1') then
-                    next_state <= display;
+                ext_value_en <= '0';
+                r1_load <= '0';
+                r2_load <= '0';
+                                
+                if reg = '0' then
+                    r1_out_en <= '1';
+                    r2_out_en <= '0';
                 else
-                    next_state <= calculate;
+                    r1_out_en <= '0';
+                    r2_out_en <= '1';
                 end if;
+
+                opA_load <= '0';
+                result_load <= '1';
+                display_sel <= "00";
                 
-            when display =>
-                en_op1 <= '0';
-                en_op2 <= '0';
-                en_opcode <= '0';
-                en_result <= '0';
-                en_display <= '1';
+                next_state <= display_result;
 
+            when display_result =>
+                ext_value_en <= '0';
+                r1_load <= '0';
+                r2_load <= '0';
+                r1_out_en <= '0';
+                r2_out_en <= '0';
+                opA_load <= '0';
+                result_load <= '0';
+                display_sel <= "11";
+                
                 if (button_rising_edge = '1') then
-                    next_state <= read_op1;
+                    next_state <= read_input;
                 else
-                    next_state <= display;
-                end if;
-            
-            when others =>
-                en_op1 <= '0';
-                en_op2 <= '0';
-                en_opcode <= '0';
-                en_result <= '0';
-                en_display <= '0';
-                next_state <= read_op1;
-            
+                    next_state <= display_result;
+                end if;             
         end case;
             
     end process;

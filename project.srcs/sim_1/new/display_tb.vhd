@@ -36,35 +36,23 @@ entity display_tb is
 end display_tb;
 
 architecture Behavioral of display_tb is
-    signal value : STD_LOGIC_VECTOR (7 downto 0);
-    signal clk : STD_LOGIC := '0';
-    signal CAtoCG : STD_LOGIC_VECTOR (0 to 6);
-    signal AN : STD_LOGIC_VECTOR (3 downto 0);
-    
     component display is
         Port ( value : in STD_LOGIC_VECTOR (7 downto 0);
                clk : in STD_LOGIC;
-               CA : out STD_LOGIC;
-               CB : out STD_LOGIC;
-               CC : out STD_LOGIC;
-               CD : out STD_LOGIC;
-               CE : out STD_LOGIC;
-               CF : out STD_LOGIC;
-               CG : out STD_LOGIC;
-               AN : out STD_LOGIC_VECTOR (3 downto 0));
+               CAtoCG : out STD_LOGIC_VECTOR (0 to 6);
+               AN : out STD_LOGIC_VECTOR (7 downto 0));
     end component;
+
+    signal value : STD_LOGIC_VECTOR (7 downto 0);
+    signal clk : STD_LOGIC := '0';
+    signal CAtoCG : STD_LOGIC_VECTOR (0 to 6);
+    signal AN : STD_LOGIC_VECTOR (7 downto 0);
 
 begin
     UUT : display port map (value => value,
                             clk => clk,
-                            AN => AN,
-                            CA => CAtoCG(0),
-                            CB => CAtoCG(1),
-                            CC => CAtoCG(2),
-                            CD => CAtoCG(3),
-                            CE => CAtoCG(4),
-                            CF => CAtoCG(5),
-                            CG => CAtoCG(6));
+                            CAtoCG => CAtoCG,
+                            AN => AN);
     
     clk <= not clk after 5ms;
     
