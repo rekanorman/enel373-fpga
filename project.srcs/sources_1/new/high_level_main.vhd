@@ -20,7 +20,6 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
---use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -72,6 +71,7 @@ architecture Structural of high_level_main is
     signal r2_out_en : STD_LOGIC;
     signal opA_load : STD_LOGIC;
     signal result_load : STD_LOGIC;
+    signal result_out_en : STD_LOGIC;
 
     -- 2-bit select for multiplexing which register value to display
     -- 00 - display blank
@@ -155,6 +155,7 @@ architecture Structural of high_level_main is
                r2_out_en : out STD_LOGIC;
                opA_load : out STD_LOGIC;
                result_load : out STD_LOGIC;
+               result_out_en : out STD_LOGIC;
                display_sel : out STD_LOGIC_VECTOR (1 downto 0));
     end component;
 
@@ -185,8 +186,8 @@ begin
                                         clr => '0',
                                         output => button);
                                         
-    alu : alu_8_bit port map (op1 => opA_out,
-                              op2 => data_bus,
+    alu : alu_8_bit port map (op1 => data_bus,
+                              op2 => opA_out,
                               opcode => alu_opcode,
                               result => alu_result);
 
@@ -232,6 +233,11 @@ begin
                                         enable => result_load,
                                         clr => '0',
                                         clk => clk200hz);
+                                        
+    buf_result : tristate_buffer generic map (width => 8)
+                                 port map (input => result_out,
+                                           enable => result_out_en,
+                                           output => data_bus);   
 
     display_mux : mux_4to1_8bit port map (a => "00000000",
                                           b => r1_out,
@@ -246,16 +252,17 @@ begin
                                        AN => AN);
 
     state_machine : fsm port map (clk => clk200hz,
-                        button => button,
-                        instruction => ext_instruction,
-                        reset => '0',
-                        ext_value_en => ext_value_en,
-                        r1_load => r1_load,
-                        r2_load => r2_load,
-                        r1_out_en => r1_out_en,
-                        r2_out_en => r2_out_en,
-                        opA_load => opA_load,
-                        result_load => result_load,
-                        display_sel => display_sel);
+                                  button => button,
+                                  instruction => ext_instruction,
+                                  reset => '0',
+                                  ext_value_en => ext_value_en,
+                                  r1_load => r1_load,
+                                  r2_load => r2_load,
+                                  r1_out_en => r1_out_en,
+                                  r2_out_en => r2_out_en,
+                                  opA_load => opA_load,
+                                  result_load => result_load,
+                                  result_out_en => result_out_en,
+                                  display_sel => display_sel);
 
 end Structural;

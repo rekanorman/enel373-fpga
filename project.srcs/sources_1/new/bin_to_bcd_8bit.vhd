@@ -16,13 +16,14 @@
 -- Revision 0.01 - File Created
 -- Additional Comments:
 -- 
--- From Double Dabble Wikipedia page
+-- Based on code from "Double Dabble" Wikipedia page:
+-- https://en.wikipedia.org/wiki/Double_dabble
 ----------------------------------------------------------------------------------
 
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.numeric_std.all;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 
 entity bin_to_bcd_8bit is
@@ -46,10 +47,7 @@ bcd1: process(bin)
   -- hundreds = bcd(11 downto 8)
   -- tens = bcd(7 downto 4)
   -- units = bcd(3 downto 0)
-  variable bcd : UNSIGNED (11 downto 0) := (others => '0');
-
-  -- by
-  -- https://en.wikipedia.org/wiki/Double_dabble
+  variable bcd : STD_LOGIC_VECTOR (11 downto 0) := (others => '0');
   
   begin
     -- zero the bcd variable
@@ -71,7 +69,7 @@ bcd1: process(bin)
         bcd(7 downto 4) := bcd(7 downto 4) + 3;
       end if;
     
-      -- hundreds can't be >4 for a 8-bit input number
+      -- hundreds can't be > 4 for a 8-bit input number
       -- so don't need to do anything to upper 4 bits of bcd
     
       -- shift bcd left by 1 bit, copy MSB of temp into LSB of bcd

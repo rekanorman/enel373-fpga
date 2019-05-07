@@ -43,12 +43,13 @@ entity fsm is
            r2_out_en : out STD_LOGIC;
            opA_load : out STD_LOGIC;
            result_load : out STD_LOGIC;
+           result_out_en : out STD_LOGIC;
            display_sel : out STD_LOGIC_VECTOR (1 downto 0));
 end fsm;
 
 architecture Behavioral of fsm is
     type state_type is (idle, read_input, load_R, display_R1, display_R2,
-                        load_A, calculate, display_result);
+                        load_A, calculate, store_result, display_result);
     signal current_state, next_state : state_type := idle;
 
     -- Signals for button edge detection
@@ -59,7 +60,8 @@ architecture Behavioral of fsm is
     
     -- Values read from the instruction
     signal opcode : STD_LOGIC_VECTOR (3 downto 0);
-    signal reg : STD_LOGIC;
+    signal reg : STD_LOGIC;    -- 0 means R1, 1 means R2
+    signal store : STD_LOGIC;  -- If 1, store result back into R1/R2
 
 begin
     -- Detect edges of button signal
@@ -71,6 +73,7 @@ begin
     -- Parse instruction
     opcode <= instruction (7 downto 4);
     reg <= instruction (3);
+    store <= instruction (2);
     
     process (clk, reset)
     begin
@@ -92,6 +95,7 @@ begin
                 r2_out_en <= '0';
                 opA_load <= '0';
                 result_load <= '0';
+                result_out_en <= '0';
                 display_sel <= "00";
                 
                 if (button_rising_edge = '1') then
@@ -108,6 +112,7 @@ begin
                 r2_out_en <= '0';
                 opA_load <= '0';
                 result_load <= '0';
+                result_out_en <= '0';
                 display_sel <= "00";
                 
                 if (opcode = "0000") then
@@ -130,6 +135,7 @@ begin
                 r2_out_en <= '0';
                 opA_load <= '0';
                 result_load <= '0';
+                result_out_en <= '0';
                 display_sel <= "00";
                 
                 if reg = '0' then
@@ -146,6 +152,7 @@ begin
                 r2_out_en <= '0';
                 opA_load <= '0';
                 result_load <= '0';
+                result_out_en <= '0';
                 display_sel <= "01";
                 
                 if (button_rising_edge = '1') then
@@ -162,6 +169,7 @@ begin
                 r2_out_en <= '0';
                 opA_load <= '0';
                 result_load <= '0';
+                result_out_en <= '0';
                 display_sel <= "10";
                 
                 if (button_rising_edge = '1') then
@@ -178,6 +186,7 @@ begin
                 r2_out_en <= '0';
                 opA_load <= '1';
                 result_load <= '0';
+                result_out_en <= '0';
                 display_sel <= "00";
                 
                 next_state <= calculate;
@@ -197,10 +206,35 @@ begin
 
                 opA_load <= '0';
                 result_load <= '1';
+                result_out_en <= '0';
+                display_sel <= "00";
+                
+                if store = '1' then
+                    next_state <= store_result;
+                else
+                    next_state <= display_result;
+                end if;
+
+            when store_result =>
+                ext_value_en <= '0';
+                
+                if reg = '0' then
+                    r1_load <= '1';
+                    r2_load <= '0';
+                else
+                    r1_load <= '0';
+                    r2_load <= '1';
+                end if;
+
+                r1_out_en <= '0';
+                r2_out_en <= '0';
+                opA_load <= '0';
+                result_load <= '0';
+                result_out_en <= '1';
                 display_sel <= "00";
                 
                 next_state <= display_result;
-
+                
             when display_result =>
                 ext_value_en <= '0';
                 r1_load <= '0';
@@ -209,6 +243,7 @@ begin
                 r2_out_en <= '0';
                 opA_load <= '0';
                 result_load <= '0';
+                result_out_en <= '0';
                 display_sel <= "11";
                 
                 if (button_rising_edge = '1') then
