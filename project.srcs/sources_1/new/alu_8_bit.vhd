@@ -1,14 +1,18 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
+-- Company:  University of Canterbury
+-- Authors: Reka Norman (rkn24)
+--          Annabelle Ritchie (ari49)
+--          Hannah Regan (hbr66)
 -- 
 -- Create Date: 13.03.2019 13:14:08
 -- Design Name: 
--- Module Name: alu_4_bit - Behavioral
--- Project Name: 
+-- Module Name: alu_8_bit - Behavioral
+-- Project Name: ENEL373 AlU + FSM + Regs Project
 -- Target Devices: 
 -- Tool Versions: 
--- Description: 
+-- Description: An 8-bit ALU which performs the operations of addition, subtraction,
+--              bitwise AND and bitwise OR. The operands are treated as signed
+--              integers, however status flags have not been implemented.
 -- 
 -- Dependencies: 
 -- 
@@ -18,19 +22,10 @@
 -- 
 ----------------------------------------------------------------------------------
 
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_SIGNED.ALL;
 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity alu_8_bit is
     Port ( op1 : in STD_LOGIC_VECTOR (7 downto 0);

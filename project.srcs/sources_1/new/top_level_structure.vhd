@@ -1,36 +1,32 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
+-- Company:  University of Canterbury
+-- Authors: Reka Norman (rkn24)
+--          Annabelle Ritchie (ari49)
+--          Hannah Regan (hbr66)
 -- 
 -- Create Date: 13.03.2019 13:15:17
 -- Design Name: 
--- Module Name: high_level_main - Structural
--- Project Name: 
+-- Module Name: top_level_structure - Structural
+-- Project Name: ENEL373 AlU + FSM + Regs Project
 -- Target Devices: 
 -- Tool Versions: 
--- Description: 
+-- Description: The top-level structural module for the ENEL373 ALU + FSM + Regs
+--              project.
 -- 
 -- Dependencies: 
 -- 
 -- Revision:
 -- Revision 0.01 - File Created
 -- Additional Comments:
+--
 ----------------------------------------------------------------------------------
 
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
 
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
-
-entity high_level_main is
+entity top_level_structure is
     Port ( SW : in STD_LOGIC_VECTOR (15 downto 0);
            BTND : in STD_LOGIC;
            CLK100MHZ : in STD_LOGIC;
@@ -43,17 +39,21 @@ entity high_level_main is
            CF : out STD_LOGIC;
            CG : out STD_LOGIC;
            AN : out STD_LOGIC_VECTOR (7 downto 0));
-end high_level_main;
+end top_level_structure;
 
-architecture Structural of high_level_main is
-    -- Main 8-bit databus
+architecture Structural of top_level_structure is
+   -------------------------------------------------------------------------------
+   -- Signals.
+   -------------------------------------------------------------------------------
+
+    -- Main 8-bit databus connecting ALU and all registers.
     signal data_bus : STD_LOGIC_VECTOR (7 downto 0);
     
-    -- Two 8-bit sections of the input instruction (from switches)
+    -- The two 8-bit sections of the input instruction (from switches).
     signal ext_instruction : STD_LOGIC_VECTOR (7 downto 0);
     signal ext_value : STD_LOGIC_VECTOR (7 downto 0);
 
-    -- ALU opcode and output
+    -- ALU opcode and output.
     signal alu_opcode : STD_LOGIC_VECTOR (3 downto 0);
     signal alu_result : STD_LOGIC_VECTOR (7 downto 0);
     
@@ -63,7 +63,7 @@ architecture Structural of high_level_main is
     signal r2_out : STD_LOGIC_VECTOR (7 downto 0);
     signal result_out : STD_LOGIC_VECTOR (7 downto 0);
 
-    -- Enables of registers and tristate buffers
+    -- Enable signals of the registers and tristate buffers.
     signal ext_value_en : STD_LOGIC;
     signal r1_load : STD_LOGIC;
     signal r2_load : STD_LOGIC;
@@ -73,25 +73,29 @@ architecture Structural of high_level_main is
     signal result_load : STD_LOGIC;
     signal result_out_en : STD_LOGIC;
 
-    -- 2-bit select for multiplexing which register value to display
-    -- 00 - display blank
-    -- 01 - display R1
-    -- 10 - display R2
-    -- 11 - display result
+    -- 2-bit select signal for multiplexing which register value to display.
+    --   00 - display blank
+    --   01 - display R1
+    --   10 - display R2
+    --   11 - display result
     signal display_sel : STD_LOGIC_VECTOR (1 downto 0);
     
-    -- The value to display, both on the LEDs and the 7-segment display
+    -- The value to display, both on the LEDs and the 7-segment display.
     signal display_value : STD_LOGIC_VECTOR (7 downto 0);
     
     -- A vector containing the values for CA, ..., CG.
     signal CAtoCG : STD_LOGIC_VECTOR (0 to 6);
     
-    -- Debounced button signal
+    -- Debounced button signal from BTND.
     signal button : STD_LOGIC;
     
     -- 200Hz clock (output of clock divider)
     signal clk200hz : STD_LOGIC;
     
+
+    -------------------------------------------------------------------------------
+    -- Components.
+    -------------------------------------------------------------------------------    
     component alu_8_bit is
         Port ( op1 : in STD_LOGIC_VECTOR (7 downto 0);
                op2 : in STD_LOGIC_VECTOR (7 downto 0);
@@ -100,9 +104,9 @@ architecture Structural of high_level_main is
     end component;
     
     component generic_register is
-        Generic (data_width : integer := 8);
-        Port ( d : in STD_LOGIC_VECTOR (data_width - 1 downto 0);
-               q : out STD_LOGIC_VECTOR (data_width - 1 downto 0);
+        Generic ( width : integer := 8);
+        Port ( d : in STD_LOGIC_VECTOR (width - 1 downto 0);
+               q : out STD_LOGIC_VECTOR (width - 1 downto 0);
                clk : in STD_LOGIC;
                clr : in STD_LOGIC;
                enable : in STD_LOGIC);
@@ -160,16 +164,17 @@ architecture Structural of high_level_main is
     end component;
 
 begin
-    -- Read input values from switches.
+    -- Read the input values from the switches.
     ext_instruction <= SW (15 downto 8);
     ext_value <= SW (7 downto 0);
     
-    -- First 4 bits of instruction are the opcode.
+    -- The first 4 bits of the instruction are the opcode.
     alu_opcode <= ext_instruction (7 downto 4);
     
     -- Display the value on the LEDs
     LED <= display_value;
     
+    -- Extract the values for CA, ..., CG from the vector containing them.
     CA <= CAtoCG(0);
     CB <= CAtoCG(1);
     CC <= CAtoCG(2);
@@ -178,7 +183,8 @@ begin
     CF <= CAtoCG(5);
     CG <= CAtoCG(6);
 
-    divider : clk_divider port map (clk_in => clk100mhz,
+
+    divider : clk_divider port map (clk_in => CLK100MHZ,
                                     clk_out => clk200hz);
                                     
     debouncer_btn : debouncer port map (input => BTND,
@@ -196,14 +202,14 @@ begin
                                               enable => ext_value_en,
                                               output => data_bus);
                               
-    opA : generic_register generic map (data_width => 8)
+    opA : generic_register generic map (width => 8)
                            port map (d => data_bus,
                                      q => opA_out,
                                      enable => opA_load,
                                      clr => '0',
                                      clk => clk200hz);
                                                             
-    r1 : generic_register generic map (data_width => 8)
+    r1 : generic_register generic map (width => 8)
                           port map (d => data_bus,
                                     q => r1_out,
                                     enable => r1_load,
@@ -215,7 +221,7 @@ begin
                                        enable => r1_out_en,
                                        output => data_bus);
                                
-    r2 : generic_register generic map (data_width => 8)
+    r2 : generic_register generic map (width => 8)
                           port map (d => data_bus,
                                     q => r2_out,
                                     enable => r2_load,
@@ -227,7 +233,7 @@ begin
                                        enable => r2_out_en,
                                        output => data_bus);      
                                   
-    result : generic_register generic map (data_width => 8)
+    result : generic_register generic map (width => 8)
                               port map (d => alu_result,
                                         q => result_out,
                                         enable => result_load,

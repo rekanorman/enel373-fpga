@@ -1,14 +1,16 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
+-- Company:  University of Canterbury
+-- Authors: Reka Norman (rkn24)
+--          Annabelle Ritchie (ari49)
+--          Hannah Regan (hbr66)
 -- 
 -- Create Date: 07.05.2019 12:20:02
 -- Design Name: 
 -- Module Name: alu_8bit_tb - Behavioral
--- Project Name: 
+-- Project Name: ENEL373 AlU + FSM + Regs Project
 -- Target Devices: 
 -- Tool Versions: 
--- Description: 
+-- Description:  A testbench file for the 8-bit ALU module (alu_8_bit.vhdl)
 -- 
 -- Dependencies: 
 -- 
@@ -18,18 +20,9 @@
 -- 
 ----------------------------------------------------------------------------------
 
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity alu_8bit_tb is
 --  Port ( );
@@ -47,6 +40,7 @@ architecture Behavioral of alu_8bit_tb is
     signal op2 : STD_LOGIC_VECTOR (7 downto 0);
     signal opcode : STD_LOGIC_VECTOR (3 downto 0);
     signal result : STD_LOGIC_VECTOR (7 downto 0);
+    
 begin
     UUT : alu_8_bit port map (op1 => op1,
                               op2 => op2,

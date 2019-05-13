@@ -1,13 +1,19 @@
 ----------------------------------------------------------------------------------
--- Code retrieved from the Digital Design using Digilent FPGA boards textbook.
+-- Company:  University of Canterbury
+-- Authors: Reka Norman (rkn24)
+--          Annabelle Ritchie (ari49)
+--          Hannah Regan (hbr66)
+-- Attribution: Code based on debounce4.vhd (Listing 24.1) from
+--              "Digital Design using Digilent FPGA boards" by Haskell and Hanna.
 -- 
 -- Create Date: 13.03.2019 14:22:29
 -- Design Name: 
 -- Module Name: debouncer - Behavioral
--- Project Name: 
+-- Project Name: ENEL373 AlU + FSM + Regs Project
 -- Target Devices: 
 -- Tool Versions: 
--- Description: 
+-- Description:  A button debouncer module, which only sets the output to high
+--               when the input has been high for five consecutive clock cycles.
 -- 
 -- Dependencies: 
 -- 
@@ -17,18 +23,9 @@
 -- 
 ----------------------------------------------------------------------------------
 
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity debouncer is
     Port ( input : in STD_LOGIC;

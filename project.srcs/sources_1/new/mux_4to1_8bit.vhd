@@ -1,14 +1,17 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
+-- Company:  University of Canterbury
+-- Authors: Reka Norman (rkn24)
+--          Annabelle Ritchie (ari49)
+--          Hannah Regan (hbr66)
 -- 
 -- Create Date: 01.05.2019 13:09:50
 -- Design Name: 
 -- Module Name: mux_4to1_8bit - Behavioral
--- Project Name: 
+-- Project Name: ENEL373 AlU + FSM + Regs Project
 -- Target Devices: 
 -- Tool Versions: 
--- Description: 
+-- Description:  A 4-to-1 multiplexer, with 8-bit inputs and output,
+--               and 2 select bits.
 -- 
 -- Dependencies: 
 -- 
@@ -18,18 +21,9 @@
 -- 
 ----------------------------------------------------------------------------------
 
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity mux_4to1_8bit is
     Port ( a : in STD_LOGIC_VECTOR (7 downto 0);

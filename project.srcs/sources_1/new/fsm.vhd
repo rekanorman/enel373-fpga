@@ -1,14 +1,21 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
+-- Company:  University of Canterbury
+-- Authors: Reka Norman (rkn24)
+--          Annabelle Ritchie (ari49)
+--          Hannah Regan (hbr66)
 -- 
 -- Create Date: 20.03.2019 13:22:18
 -- Design Name: 
 -- Module Name: fsm - Behavioral
--- Project Name: 
+-- Project Name: ENEL373 AlU + FSM + Regs Project
 -- Target Devices: 
 -- Tool Versions: 
--- Description: 
+-- Description:  A FSM to control the flow of user interaction with the circuit.
+--               The states include reading input from the switches, loading 
+--               values into various registers, storing the ALU result, and
+--               displaying the contents of registers. The outputs of the FSM
+--               are the enable bits of registers and tristate buffers, allowing
+--               the FSM to control data flow through the circuit.
 -- 
 -- Dependencies: 
 -- 
@@ -18,18 +25,9 @@
 -- 
 ----------------------------------------------------------------------------------
 
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity fsm is
     Port ( clk : in STD_LOGIC;
@@ -56,21 +54,19 @@ architecture Behavioral of fsm is
     signal button_1 : STD_LOGIC := '0';
     signal button_2 : STD_LOGIC := '0';
     signal button_rising_edge : STD_LOGIC := '0';
-    signal button_falling_edge : STD_LOGIC := '0';
     
-    -- Values read from the instruction
+    -- Values read from the instruction input via switches.
     signal opcode : STD_LOGIC_VECTOR (3 downto 0);
     signal reg : STD_LOGIC;    -- 0 means R1, 1 means R2
     signal store : STD_LOGIC;  -- If 1, store result back into R1/R2
 
 begin
-    -- Detect edges of button signal
+    -- Detect edges of button signal.
     button_1 <= button when rising_edge(clk);
     button_2 <= button_1 when rising_edge(clk);
     button_rising_edge <= button_1 and not button_2;
-    button_falling_edge <= not button_1 and button_2;
     
-    -- Parse instruction
+    -- Extract the various parts of the instruction.
     opcode <= instruction (7 downto 4);
     reg <= instruction (3);
     store <= instruction (2);

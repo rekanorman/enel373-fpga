@@ -1,14 +1,17 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
+-- Company:  University of Canterbury
+-- Authors: Reka Norman (rkn24)
+--          Annabelle Ritchie (ari49)
+--          Hannah Regan (hbr66)
 -- 
 -- Create Date: 13.03.2019 13:41:13
 -- Design Name: 
 -- Module Name: generic_register - Behavioral
--- Project Name: 
+-- Project Name: ENEL373 AlU + FSM + Regs Project
 -- Target Devices: 
 -- Tool Versions: 
--- Description: 
+-- Description:  A register with a configurable width, supporting clear and
+--               enable operations.
 -- 
 -- Dependencies: 
 -- 
@@ -18,24 +21,15 @@
 -- 
 ----------------------------------------------------------------------------------
 
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity generic_register is
-    Generic (data_width : integer := 8);
-    Port ( d : in STD_LOGIC_VECTOR (data_width - 1 downto 0);
-           q : out STD_LOGIC_VECTOR (data_width - 1 downto 0);
+    Generic (width : integer := 8);
+    Port ( d : in STD_LOGIC_VECTOR (width - 1 downto 0);
+           q : out STD_LOGIC_VECTOR (width - 1 downto 0);
            clk : in STD_LOGIC;
            clr : in STD_LOGIC;
            enable : in STD_LOGIC);

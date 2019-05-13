@@ -1,14 +1,18 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
+-- Company:  University of Canterbury
+-- Authors: Reka Norman (rkn24)
+--          Annabelle Ritchie (ari49)
+--          Hannah Regan (hbr66)
 -- 
 -- Create Date: 03.04.2019 13:36:56
 -- Design Name: 
 -- Module Name: display - Behavioral
--- Project Name: 
+-- Project Name: ENEL373 AlU + FSM + Regs Project
 -- Target Devices: 
 -- Tool Versions: 
--- Description: 
+-- Description:  A display module which takes an 8-bit binary value and displays
+--               it as a signed decimal integer on the four rightmost digits of
+--               the seven-segment display, multiplexing between the digits.
 -- 
 -- Dependencies: 
 -- 
@@ -18,20 +22,10 @@
 -- 
 ----------------------------------------------------------------------------------
 
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_SIGNED.ALL;
 
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity display is
     Port ( value : in STD_LOGIC_VECTOR (7 downto 0);
@@ -44,7 +38,7 @@ architecture Behavioral of display is
     -- Input value converted to positive (in range 0 to 128)
     signal positive_bin_value : STD_LOGIC_VECTOR (7 downto 0) := "00000000";
     
-    -- 1 if input value is negative (when treated as signed number)
+    -- 1 if input value is negative (when treated as a signed integer)
     signal is_negative : STD_LOGIC := '0';
     
     -- BCD values representing the three digits of the input value
@@ -69,14 +63,14 @@ architecture Behavioral of display is
     
     component bcd_to_7seg is
            Port ( bcd_in : in std_logic_vector (3 downto 0);
-                  out_7seg : out    std_logic_vector (0 to 6));
+                  out_7seg : out std_logic_vector (0 to 6));
     end component;
 
 begin
     -- Not using the leftmost 4 displays, so turn them off.
     AN(7 downto 4) <= "1111";
     
-    -- One bit of AN is enabled at a time to multiplex between displays
+    -- One bit of AN is enabled at a time to multiplex between digits
     -- (inverted because AN is active low).
     AN(3 downto 0) <= not state;
     
@@ -88,10 +82,10 @@ begin
     bcd_7seg : bcd_to_7seg port map (bcd_in => current_bcd_display,
                                      out_7seg => CAtoCG);
     
-    -- Take the absolute value of the input value
+    -- Take the absolute value of the input value.
     positive_bin_value <= abs value;
     
-    -- Check whether input value if negative (to know if we need to display minus sign)
+    -- Check whether input value if negative.
     is_negative <= '1' when value < 0 else '0';
     
     -- Update state every clock cycle to multiplex between displays
@@ -103,7 +97,7 @@ begin
         end if;
     end process;
    
-    -- Determine the current BCD value to be displayed, based on the current state
+    -- Determine the current BCD value to be displayed, based on the current state.
     process (state, is_negative, hundreds, tens, ones)
     begin
         case state is
