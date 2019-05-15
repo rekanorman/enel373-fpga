@@ -56,13 +56,27 @@ begin
         opcode <= "1000";
         wait for 5ms;
         
+        -- 5 + (-16)
+        -- Expected result = -11 (1111 0101)
+        op1 <= "00000101";
+        op2 <= "11110000";
+        opcode <= "1000";
+        wait for 5ms;
+
+        -- 10 - 3
+        -- Expected result = 7 (0000 0111)
+        op1 <= "00001010";
+        op2 <= "00000011";
+        opcode <= "0100";
+        wait for 5ms;
+                
         -- 5 - 8
-        -- Expected result = -1 (1111 1101)
+        -- Expected result = -3 (1111 1101)
         op1 <= "00000101";
         op2 <= "00001000";
         opcode <= "0100";
         wait for 5ms;
-        
+                
         -- 0000 1111 AND 0011 1100
         -- Expected result = 0000 1100
         op1 <= "00001111";
@@ -70,10 +84,17 @@ begin
         opcode <= "0010";
         wait for 5ms;
         
-        -- 0000 1111 OR 0011 1100
-        -- Expected result = 0011 1111
+        -- 0000 1111 AND 1000 0000
+        -- Expected result = 0000 0000
         op1 <= "00001111";
-        op2 <= "00111100";
+        op2 <= "10000000";
+        opcode <= "0010";
+        wait for 5ms;
+        
+        -- 0000 1111 OR 1111 0000
+        -- Expected result = 1111 1111
+        op1 <= "00001111";
+        op2 <= "11110000";
         opcode <= "0001";
         wait for 5ms;
         
