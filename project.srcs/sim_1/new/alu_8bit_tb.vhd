@@ -98,6 +98,13 @@ begin
         opcode <= "0001";
         wait for 5ms;
         
+        -- 0000 1111 OR 0011 1100
+        -- Expected result = 0011 1111
+        op1 <= "00001111";
+        op2 <= "00111100";
+        opcode <= "0001";
+        wait for 5ms;
+    
     end process;
-
+        
 end Behavioral;
