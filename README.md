@@ -6,6 +6,8 @@
 * Annabelle Ritchie (ari49)
 * Hannah Regan (hbr66)
 
+This project implements a simple 8-bit arithmetic logic unit for an FPGA.
+
 | File Name (.vhd)    | Description                                                                                                                      |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------|
 | alu_8_bit           | An 8-bit ALU which performs the operations of addition, subtraction, bitwise AND and bitwise OR.                                 |
